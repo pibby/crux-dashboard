@@ -7,13 +7,13 @@ import { METRIC_THRESHOLDS, METRIC_CONFIG } from './constants';
  * @returns {string} - The rating string.
  */
 export const getMetricRating = (metricNameKey, rawValue) => {
-  const thresholds = METRIC_THRESHOLDS[metricNameKey];
-  if (!thresholds || rawValue === undefined || rawValue === null) {
-    return 'N/A';
-  }
-  if (rawValue <= thresholds.good) return 'Good';
-  if (rawValue <= thresholds.needsImprovement) return 'Needs Improvement';
-  return 'Poor';
+	const thresholds = METRIC_THRESHOLDS[metricNameKey];
+	if (!thresholds || rawValue === undefined || rawValue === null) {
+		return 'N/A';
+	}
+	if (rawValue <= thresholds.good) return 'Good';
+	if (rawValue <= thresholds.needsImprovement) return 'Needs Improvement';
+	return 'Poor';
 };
 
 /**
@@ -23,17 +23,17 @@ export const getMetricRating = (metricNameKey, rawValue) => {
  * @returns {string} - The formatted value string.
  */
 export const formatMetricValue = (metricApiName, rawValue) => {
-  if (rawValue === undefined || rawValue === null) return 'N/A';
-  const config = Object.values(METRIC_CONFIG).find(m => m.apiName === metricApiName);
-  if (!config) return String(rawValue);
-  
-  let value = parseFloat(String(rawValue));
-  
-  if (config.name === 'LCP' || config.name === 'FCP') return (value / 1000).toFixed(2);
-  if (config.name === 'CLS') return value.toFixed(2);
-  if (config.name === 'INP' || config.name === 'TTFB') return Math.round(value);
-  
-  return String(value);
+	if (rawValue === undefined || rawValue === null) return 'N/A';
+	const config = Object.values(METRIC_CONFIG).find(m => m.apiName === metricApiName);
+	if (!config) return String(rawValue);
+	
+	let value = parseFloat(String(rawValue));
+	
+	if (config.name === 'LCP' || config.name === 'FCP') return (value / 1000).toFixed(2);
+	if (config.name === 'CLS') return value.toFixed(2);
+	if (config.name === 'INP' || config.name === 'TTFB') return Math.round(value);
+	
+	return String(value);
 };
 
 /**
@@ -42,17 +42,17 @@ export const formatMetricValue = (metricApiName, rawValue) => {
  * @returns {object} - An object with the rating string and a corresponding color class.
  */
 export const getOverallAssessment = (currentMetrics) => {
-    if (!currentMetrics) return { rating: 'Incomplete', color: 'bg-gray-500' };
-    const cwvMetrics = [
-        { name: 'LCP', p75: currentMetrics.largest_contentful_paint?.p75 },
-        { name: 'INP', p75: currentMetrics.interaction_to_next_paint?.p75 },
-        { name: 'CLS', p75: currentMetrics.cumulative_layout_shift?.p75 },
-    ];
-    const ratings = cwvMetrics.map(m => getMetricRating(m.name, m.p75));
-    if (ratings.includes('N/A') || ratings.length < 3) return { rating: 'Incomplete Data', color: 'bg-gray-500' };
-    if (ratings.includes('Poor')) return { rating: 'Poor', color: 'bg-red-600' };
-    if (ratings.includes('Needs Improvement')) return { rating: 'Needs Improvement', color: 'bg-yellow-500' };
-    return { rating: 'Good', color: 'bg-green-600' };
+	if (!currentMetrics) return { rating: 'Incomplete', color: 'bg-gray-500' };
+	const cwvMetrics = [
+		{ name: 'LCP', p75: currentMetrics.largest_contentful_paint?.p75 },
+		{ name: 'INP', p75: currentMetrics.interaction_to_next_paint?.p75 },
+		{ name: 'CLS', p75: currentMetrics.cumulative_layout_shift?.p75 },
+	];
+	const ratings = cwvMetrics.map(m => getMetricRating(m.name, m.p75));
+	if (ratings.includes('N/A') || ratings.length < 3) return { rating: 'Incomplete Data', color: 'bg-gray-500' };
+	if (ratings.includes('Poor')) return { rating: 'Poor', color: 'bg-red-600' };
+	if (ratings.includes('Needs Improvement')) return { rating: 'Needs Improvement', color: 'bg-yellow-500' };
+	return { rating: 'Good', color: 'bg-green-600' };
 };
 
 /**
@@ -62,18 +62,18 @@ export const getOverallAssessment = (currentMetrics) => {
  * @returns {string} - "Improving", "Regressing", or "Stable".
  */
 export const getMetricTrend = (currentValue, historicalValues) => {
-  if (currentValue === undefined || currentValue === null || !historicalValues || historicalValues.length < 1) {
-    return 'Stable';
-  }
-  const prevValue = historicalValues[historicalValues.length - 1];
-  if (prevValue === undefined || prevValue === null) {
-    return 'Stable';
-  }
-  const percentChange = Math.abs((currentValue - prevValue) / prevValue) * 100;
-  if (percentChange < 5) return 'Stable';
-  if (currentValue < prevValue) return 'Improving';
-  if (currentValue > prevValue) return 'Regressing';
-  return 'Stable';
+	if (currentValue === undefined || currentValue === null || !historicalValues || historicalValues.length < 1) {
+		return 'Stable';
+	}
+	const prevValue = historicalValues[historicalValues.length - 1];
+	if (prevValue === undefined || prevValue === null) {
+		return 'Stable';
+	}
+	const percentChange = Math.abs((currentValue - prevValue) / prevValue) * 100;
+	if (percentChange < 5) return 'Stable';
+	if (currentValue < prevValue) return 'Improving';
+	if (currentValue > prevValue) return 'Regressing';
+	return 'Stable';
 };
 
 /**
@@ -82,26 +82,26 @@ export const getMetricTrend = (currentValue, historicalValues) => {
  * @returns {Array<object|null>} - An array of date objects for the API, or [null] for current data.
  */
 export const getHistoryDates = (timeframe) => {
-  if (timeframe.days === 0) {
-    return [null];
-  }
-  const dates = [];
-  const today = new Date();
-  const mostRecentQueryDate = new Date(today);
-  mostRecentQueryDate.setUTCDate(today.getUTCDate() - 2);
+	if (timeframe.days === 0) {
+		return [null];
+	}
+	const dates = [];
+	const today = new Date();
+	const mostRecentQueryDate = new Date(today);
+	mostRecentQueryDate.setUTCDate(today.getUTCDate() - 2);
 
-  for (let i = 0; i < timeframe.historyPoints; i++) {
-    const dateToQuery = new Date(mostRecentQueryDate);
-    dateToQuery.setUTCDate(mostRecentQueryDate.getUTCDate() - (i * timeframe.interval));
-    dates.push({
-      year: dateToQuery.getUTCFullYear(),
-      month: dateToQuery.getUTCMonth() + 1,
-      day: dateToQuery.getUTCDate(),
-    });
-  }
-  return dates.sort((a,b) => {
-    const dateA = new Date(Date.UTC(a.year, a.month - 1, a.day));
-    const dateB = new Date(Date.UTC(b.year, b.month - 1, b.day));
-    return dateA - dateB;
-  });
+	for (let i = 0; i < timeframe.historyPoints; i++) {
+		const dateToQuery = new Date(mostRecentQueryDate);
+		dateToQuery.setUTCDate(mostRecentQueryDate.getUTCDate() - (i * timeframe.interval));
+		dates.push({
+			year: dateToQuery.getUTCFullYear(),
+			month: dateToQuery.getUTCMonth() + 1,
+			day: dateToQuery.getUTCDate(),
+		});
+	}
+	return dates.sort((a,b) => {
+		const dateA = new Date(Date.UTC(a.year, a.month - 1, a.day));
+		const dateB = new Date(Date.UTC(b.year, b.month - 1, b.day));
+		return dateA - dateB;
+	});
 };
